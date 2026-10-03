@@ -12,7 +12,7 @@ One black shape travels through the whole deck and turns into something new on e
 
 | Slide | The black shape becomes |
 |---|---|
-| 1 · AI Agents | the whole dark cover |
+| 1 · AI Agents | the whole dark cover; a small agent orbit sits beside the title and unfolds into the loop on slide 2 |
 | 2 · An AI that gets things done | the **Your goal** circle at the centre of the loop |
 | 3 · Chat AI vs AI Agent | the **AI Agent** panel |
 | 4 · What an agent can do | the rule above the six capabilities |
@@ -25,7 +25,7 @@ One black shape travels through the whole deck and turns into something new on e
 | 11 · From my notes to a clean journal | the arrow between notes and journal |
 | 12 · Dojima | the whole dark slide |
 | 13 · An AI team for HR | the **Head of HR** box |
-| 14 · Start small | the whole dark closing slide |
+| 14 · Start small | the whole dark closing slide, with a big question mark in the same orbit |
 
 The titles, the slide counter and the progress line along the bottom morph between slides as well.
 

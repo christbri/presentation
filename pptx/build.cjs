@@ -67,7 +67,7 @@ function ellipse(slide, o) {
   slide.addShape("ellipse", {
     x: px(o.x), y: px(o.y), w: px(o.w), h: px(o.h),
     fill: o.fill ? { color: o.fill } : { type: "none" },
-    line: o.line ? { color: o.line, width: o.lw || 1 } : { type: "none" },
+    line: o.line ? { color: o.line, width: o.lw || 1, dashType: o.dash || "solid" } : { type: "none" },
     objectName: nameFor(o.delay, o.label),
   });
 }
@@ -158,6 +158,25 @@ async function build() {
       { text: "working", options: { fontFace: SERIF, italic: true, color: C.white } },
       { text: " with AI." },
     ], { x: 144, y: 832, w: 900, h: 140, size: 48, color: C.g500, lh: 1.25, delay: 700 });
+    // The agent loop, drawn small and quiet. On the next slide Morph unfolds it
+    // into the full Plan / Act / Check / Improve diagram.
+    {
+      const cx = 1536, cy = 500, r = 220;
+      ellipse(s, { x: cx - r - 52, y: cy - r - 52, w: (r + 52) * 2, h: (r + 52) * 2, line: C.g800, lw: 1, dash: "dash", label: "!!halo" });
+      ellipse(s, { x: cx - r, y: cy - r, w: r * 2, h: r * 2, line: C.dim, lw: 1.25, label: "!!ring" });
+      ellipse(s, { x: cx - 96, y: cy - 96, w: 192, h: 192, line: C.g800, lw: 1, label: "!!inner" });
+      const nodes = [["Plan", cx, cy - r, 0, 1], ["Act", cx + r, cy, -1, 0], ["Check", cx, cy + r, 0, -1], ["Improve", cx - r, cy, 1, 0]];
+      nodes.forEach(([t, x, y, dx, dy], k) => {
+        ellipse(s, { x: x - 13, y: y - 13, w: 26, h: 26, fill: C.white, label: "!!node" + k });
+        const lw = 160, lh = 34;
+        const lx = dx ? (dx > 0 ? x + 32 : x - 32 - lw) : x - lw / 2;
+        const ly = dy ? (dy > 0 ? y + 28 : y - 28 - lh) : y - lh / 2;
+        text(s, t, { x: lx, y: ly, w: lw, h: lh, size: 24, color: C.g500, align: dx ? (dx > 0 ? "left" : "right") : "center", valign: "middle", label: "!!nodeLabel" + k });
+      });
+      const a = -Math.PI / 4; // a task in flight, between Plan and Act
+      ellipse(s, { x: cx + r * Math.cos(a) - 8, y: cy + r * Math.sin(a) - 8, w: 16, h: 16, fill: C.white, label: "!!orbit" });
+      text(s, "Your goal", { x: cx - 96, y: cy - 30, w: 192, h: 60, size: 30, font: SERIF, italic: true, color: C.white, align: "center", valign: "middle", label: "!!goal" });
+    }
     chrome(s, 1, "AI Agents", true);
     s.addNotes("Today I want to explain AI agents in simple terms, show what I have built with them, and suggest how we could use them in HR.");
   }
@@ -179,13 +198,15 @@ async function build() {
     text(s, "Think of it as an AI employee, not an AI search box.", { x: 144, y: 676, w: 760, h: 140, size: 52, font: SERIF, italic: true, lh: 1.1, delay: 760 });
     // the loop
     const cx = 1430, cy = 560, r = 250;
-    ellipse(s, { x: cx - r, y: cy - r, w: r * 2, h: r * 2, line: C.black, lw: 1.5, delay: 400 });
+    ellipse(s, { x: cx - r, y: cy - r, w: r * 2, h: r * 2, line: C.black, lw: 1.5, label: "!!ring" });
     const nodes = [["Plan", cx, cy - r], ["Act", cx + r, cy], ["Check", cx, cy + r], ["Improve", cx - r, cy]];
     nodes.forEach(([t, x, y], k) => {
-      ellipse(s, { x: x - 72, y: y - 72, w: 144, h: 144, fill: C.paper, line: C.black, lw: 1.5, delay: 600 + k * 200 });
-      text(s, t, { x: x - 72, y: y - 72, w: 144, h: 144, size: 30, bold: true, align: "center", valign: "middle", delay: 600 + k * 200 });
+      ellipse(s, { x: x - 72, y: y - 72, w: 144, h: 144, fill: C.paper, line: C.black, lw: 1.5, label: "!!node" + k });
+      text(s, t, { x: x - 72, y: y - 72, w: 144, h: 144, size: 30, bold: true, align: "center", valign: "middle", label: "!!nodeLabel" + k });
     });
-    text(s, "Your goal", { x: cx - 105, y: cy - 105, w: 210, h: 210, size: 46, font: SERIF, italic: true, color: C.white, align: "center", valign: "middle", lh: 0.95, delay: 1500 });
+    const a = Math.PI / 4; // the task has moved on, between Act and Check
+    ellipse(s, { x: cx + r * Math.cos(a) - 9, y: cy + r * Math.sin(a) - 9, w: 18, h: 18, fill: C.black, label: "!!orbit" });
+    text(s, "Your goal", { x: cx - 105, y: cy - 105, w: 210, h: 210, size: 46, font: SERIF, italic: true, color: C.white, align: "center", valign: "middle", lh: 0.95, label: "!!goal" });
     chrome(s, 2, "What is an AI agent", false);
     s.addNotes("A chatbot answers and stops. An agent gets a goal and loops: plan, act with tools, check the result, improve, until the job is done.");
   }
@@ -472,6 +493,15 @@ async function build() {
     ["One agent.", "One task.", "One week."].forEach((t, k) =>
       text(s, t, { x: 144 + k * 420, y: 876, w: 440, h: 100, size: 64, font: SERIF, italic: true, color: C.white, delay: 700 + k * 300 }));
     text(s, "Questions?", { x: 1426, y: 885, w: 350, h: 70, size: 56, bold: true, color: C.white, align: "right", delay: 1900 });
+    // A big question mark, sitting in the same quiet orbit as the cover.
+    {
+      const cx = 1500, cy = 500, r = 250;
+      ellipse(s, { x: cx - r - 52, y: cy - r - 52, w: (r + 52) * 2, h: (r + 52) * 2, line: C.g800, lw: 1, dash: "dash", label: "!!halo" });
+      ellipse(s, { x: cx - r, y: cy - r, w: r * 2, h: r * 2, line: C.g800, lw: 1.25, label: "!!ring" });
+      const a = -Math.PI / 4;
+      ellipse(s, { x: cx + r * Math.cos(a) - 8, y: cy + r * Math.sin(a) - 8, w: 16, h: 16, fill: C.white, label: "!!orbit" });
+      text(s, "?", { x: cx - 290, y: cy - 250, w: 500, h: 500, size: 560, font: SERIF, italic: true, color: C.white, align: "center", valign: "middle", lh: 1, label: "!!question" });
+    }
     chrome(s, 14, "Thank you", true);
     s.addNotes("My suggestion: start small with one agent and one task, see it working within a week, then grow from there.");
   }
