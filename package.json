@@ -1,0 +1,13 @@
+{
+  "name": "ai-agents-presentation",
+  "private": true,
+  "description": "AI Agents: a simple guide. Web deck (index.html) and PowerPoint build.",
+  "scripts": {
+    "pptx": "node pptx/build.cjs"
+  },
+  "devDependencies": {
+    "jszip": "^3.10.1",
+    "pptxgenjs": "^3.12.0",
+    "sharp": "^0.33.5"
+  }
+}

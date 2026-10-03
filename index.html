@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Agents</title>
+<meta name="description" content="AI Agents: a simple guide. From chatting with AI to working with AI.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="stylesheet" href="assets/deck.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0a0a'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<main class="viewport" aria-roledescription="carousel" aria-label="AI Agents presentation">
+<div class="stage" id="stage">
+
+  <!-- 01 · Cover ========================================================= -->
+  <section class="slide dark s-cover" data-section="AI Agents" aria-label="AI Agents">
+    <div class="top">
+      <span class="label" data-a="fade">A simple guide</span>
+      <span class="label" data-a="fade">For the HR team</span>
+    </div>
+    <h1 class="title xl">
+      <span class="mask-line" data-a><span>AI</span></span>
+      <span class="mask-line" data-a><span class="serif">Agents</span></span>
+    </h1>
+    <div class="bottom">
+      <p class="lede" data-a>From chatting with AI<br>to <em>working</em> with AI.</p>
+      <div class="hint label" data-a="fade" data-d="900"><span class="kbd">→</span> to begin</div>
+    </div>
+    <aside class="speaker-notes">Today I want to explain AI agents in simple terms, show what I have built with them, and suggest how we could use them in HR.</aside>
+  </section>
+
+  <!-- 02 · What is an AI agent =========================================== -->
+  <section class="slide s-what" data-section="What is an AI agent" aria-label="An AI that gets things done">
+    <div class="left">
+      <h2 class="title">
+        <span class="mask-line" data-a><span>An AI that</span></span>
+        <span class="mask-line" data-a><span class="serif">gets things done</span></span>
+      </h2>
+      <div class="contrast">
+        <p data-a>Normal AI <strong>answers your question.</strong></p>
+        <p data-a>An AI agent <strong>takes a goal</strong>, works on it step by step, uses tools, and checks its own result.</p>
+      </div>
+      <p class="quote" data-a data-d="300">Think of it as an AI employee, not an AI search box.</p>
+    </div>
+    <div class="right">
+      <div class="loop" aria-label="The agent loop: plan, act, check, improve, around your goal">
+        <svg class="ring" viewBox="0 0 720 720" aria-hidden="true">
+          <circle class="track" cx="360" cy="360" r="282"/>
+          <circle class="trace draw-path" cx="360" cy="360" r="282" pathLength="1" transform="rotate(-90 360 360)" style="--delay: 500ms"/>
+        </svg>
+        <div class="orbit-dot" aria-hidden="true"></div>
+        <div class="node n1" data-a="scale" data-d="500">Plan</div>
+        <div class="node n2" data-a="scale" data-d="700">Act</div>
+        <div class="node n3" data-a="scale" data-d="900">Check</div>
+        <div class="node n4" data-a="scale" data-d="1100">Improve</div>
+        <div class="center" data-a="scale" data-d="1500">Your<br>goal</div>
+      </div>
+    </div>
+    <aside class="speaker-notes">A chatbot answers and stops. An agent gets a goal and loops: plan, act with tools, check the result, improve, until the job is done.</aside>
+  </section>
+
+  <!-- 03 · Chat AI vs AI agent ========================================== -->
+  <section class="slide s-vs" data-section="Chat AI vs AI agent" aria-label="Chat AI vs AI Agent">
+    <h2 class="title">
+      <span class="mask-line" data-a><span>Chat AI <span class="serif" style="color:var(--gray-400)">vs</span> AI Agent</span></span>
+    </h2>
+    <div class="vs">
+      <div class="side chat" data-a="left">
+        <div class="head">
+          <span class="label">LLM / Chat AI</span>
+          <span class="h3">The brain</span>
+          <span class="small">ChatGPT · Claude · Gemini</span>
+        </div>
+        <div class="steps">
+          <div class="step" data-a data-d="300"><span class="n">01</span><span>You ask a question</span></div>
+          <div class="step" data-a data-d="500"><span class="n">02</span><span>It gives an answer</span></div>
+          <div class="step" data-a data-d="700"><span class="n">03</span><span>It stops and waits</span></div>
+        </div>
+      </div>
+      <div class="side agent dark" data-a="wipe-r" data-d="150">
+        <div class="head">
+          <span class="label">AI Agent</span>
+          <span class="h3">Brain + hands + a schedule</span>
+          <span class="small">Hermes · Claude Code · Codex</span>
+        </div>
+        <div class="steps">
+          <div class="step" data-a data-d="400"><span class="n">01</span><span>You give it a goal</span></div>
+          <div class="step" data-a data-d="600"><span class="n">02</span><span>It plans and does the work</span></div>
+          <div class="step" data-a data-d="800"><span class="n">03</span><span>It reports back when done</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="equation" data-a data-d="1000">
+      <span><b>LLM</b><span class="eq">=</span><span class="serif">the brain.</span></span>
+      <span><b>Agent</b><span class="eq">=</span><span class="serif">brain + hands + a schedule.</span></span>
+    </div>
+    <aside class="speaker-notes">ChatGPT, Claude and Gemini are the brains. An agent like Hermes, Claude Code or Codex wraps a brain with tools and a schedule, so it can actually do the work.</aside>
+  </section>
+
+  <!-- 04 · What agents can do =========================================== -->
+  <section class="slide s-can" data-section="What agents can do" aria-label="What an agent can do that chat can't">
+    <h2 class="title">
+      <span class="mask-line" data-a><span>What an agent can do</span></span>
+      <span class="mask-line" data-a><span class="serif">that chat can’t</span></span>
+    </h2>
+    <div class="caps">
+      <div class="cap icon-draw" data-a><i data-icon="clock" class="lg"></i><span class="h3">Works on a schedule</span><span class="body">Runs tasks at set times, without being asked</span></div>
+      <div class="cap icon-draw" data-a><i data-icon="wrench" class="lg"></i><span class="h3">Uses tools</span><span class="body">Browses the web, edits files, runs apps</span></div>
+      <div class="cap icon-draw" data-a><i data-icon="cpu" class="lg"></i><span class="h3">Thinks in steps</span><span class="body">Breaks a goal into steps and decides what’s next</span></div>
+      <div class="cap icon-draw" data-a><i data-icon="user" class="lg"></i><span class="h3">Has a persona</span><span class="body">A fixed role, tone and set of rules</span></div>
+      <div class="cap icon-draw" data-a><i data-icon="box" class="lg"></i><span class="h3">Learns skills</span><span class="body">Install new abilities, like apps on a phone</span></div>
+      <div class="cap icon-draw" data-a><i data-icon="share-2" class="lg"></i><span class="h3">Works in a team</span><span class="body">Hands work to other agents in a workflow</span></div>
+    </div>
+    <aside class="speaker-notes">These six things separate an agent from a chatbot: schedules, tools, step-by-step thinking, a persona, installable skills, and teamwork with other agents.</aside>
+  </section>
+
+  <!-- 05 · Building blocks ============================================== -->
+  <section class="slide s-blocks" data-section="The building blocks" aria-label="What every agent is made of">
+    <h2 class="title">
+      <span class="mask-line" data-a><span>What every agent</span></span>
+      <span class="mask-line" data-a><span class="serif">is made of</span></span>
+    </h2>
+    <div class="blocks">
+      <div class="trio">
+        <div class="block icon-draw" data-a="drop" data-d="700">
+          <div class="top"><i data-icon="heart" class="lg"></i><span class="label">Who it is</span></div>
+          <span class="h3">Soul</span>
+          <span class="body">Personality, role and rules, written in one file</span>
+        </div>
+        <div class="block icon-draw" data-a="drop" data-d="820">
+          <div class="top"><i data-icon="zap" class="lg"></i><span class="label">What it can do</span></div>
+          <span class="h3">Skills</span>
+          <span class="body">Step-by-step playbooks and tools it can use</span>
+        </div>
+        <div class="block icon-draw" data-a="drop" data-d="940">
+          <div class="top"><i data-icon="database" class="lg"></i><span class="label">What it remembers</span></div>
+          <span class="h3">Memory</span>
+          <span class="body">Notes about you, your work and past tasks</span>
+        </div>
+      </div>
+      <div class="model dark icon-draw" data-a="wipe-r" data-d="150">
+        <div class="name"><i data-icon="cpu" class="lg"></i><span class="h3">Model</span><span class="label">The brain underneath</span></div>
+        <span class="body">Picked per job: <strong>a small, fast model</strong> for simple tasks, <strong>a stronger one</strong> for judgment and creative work.</span>
+      </div>
+    </div>
+    <aside class="speaker-notes">An agent is a model plus three things. The model is the brain, and you choose it per job: cheap and fast for simple work, stronger for judgment. Soul is its character and job description, Skills are its playbooks, Memory is its experience with you.</aside>
+  </section>
+
+  <!-- 06 · What I am building =========================================== -->
+  <section class="slide dark s-eight" data-section="What I am building" aria-label="My own AI team: 8 agents">
+    <div class="copy">
+      <h2 class="title">
+        <span class="mask-line" data-a><span>My own</span></span>
+        <span class="mask-line" data-a><span class="serif">AI team</span></span>
+      </h2>
+      <p class="lede" data-a data-d="400"><strong>8 agents</strong>, running 24/7 on one small server. I manage them from Discord.</p>
+    </div>
+    <div class="odometer" aria-hidden="true"><div class="reel"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div></div>
+    <aside class="speaker-notes">This is what I have been building: a small team of AI agents that run all day on one cheap server. I talk to them through Discord, like a team chat.</aside>
+  </section>
+
+  <!-- 07 · Team structure ================================================ -->
+  <section class="slide s-team" data-section="My AI team" aria-label="How my team is structured">
+    <h2 class="title">
+      <span class="mask-line" data-a><span>How my team <span class="serif">is structured</span></span></span>
+    </h2>
+    <div class="org" id="org">
+      <svg class="wires" aria-hidden="true"></svg>
+      <div class="me pill" data-a="drop" data-wire="me">Me</div>
+      <div class="ceo-wrap">
+        <span class="small l" data-a="fade" data-d="600">Receives my tasks,</span>
+        <div class="ceo-box" data-a="scale" data-d="300" data-wire="ceo">CEO<br><small>Rudi</small></div>
+        <span class="small" data-a="fade" data-d="600">delegates, reports back</span>
+      </div>
+      <div class="crew">
+        <div class="agent-card icon-draw" data-a data-d="1100" data-wire="crew"><span class="icon-wrap"><i data-icon="search"></i></span><span class="role">Researcher</span><span class="who">Edward</span><span class="small">Daily news and markets</span></div>
+        <div class="agent-card icon-draw" data-a data-d="1100" data-wire="crew"><span class="icon-wrap"><i data-icon="pen-tool"></i></span><span class="role">Designer</span><span class="who">Leonardo</span><span class="small">Visuals and UI/UX</span></div>
+        <div class="agent-card icon-draw" data-a data-d="1100" data-wire="crew"><span class="icon-wrap"><i data-icon="code"></i></span><span class="role">Engineer</span><span class="who">Astra</span><span class="small">Builds and fixes the system</span></div>
+        <div class="agent-card icon-draw" data-a data-d="1100" data-wire="crew"><span class="icon-wrap"><i data-icon="trending-up"></i></span><span class="role">Trading analyst</span><span class="who">Kimi</span><span class="small">Reviews my trading journal</span></div>
+        <div class="agent-card icon-draw" data-a data-d="1100" data-wire="crew"><span class="icon-wrap"><i data-icon="activity"></i></span><span class="role">Health coach</span><span class="who">Alexa</span><span class="small">Routine and nutrition check-ins</span></div>
+        <div class="agent-card icon-draw" data-a data-d="1100" data-wire="crew"><span class="icon-wrap"><i data-icon="message-circle"></i></span><span class="role">Marketing</span><span class="who">Biti</span><span class="small">Content and captions</span></div>
+        <div class="agent-card icon-draw" data-a data-d="1100" data-wire="crew"><span class="icon-wrap"><i data-icon="map"></i></span><span class="role">Travel planner</span><span class="who">Qunce</span><span class="small">Trips and itineraries</span></div>
+      </div>
+    </div>
+    <aside class="speaker-notes">I give tasks to my CEO agent. It breaks them down, hands them to the right specialist, then reports back to me. Each specialist has its own role and personality.</aside>
+  </section>
+
+  <!-- 08 · The office ==================================================== -->
+  <section class="slide s-office" data-section="The office" aria-label="Their office, live">
+    <div class="copy">
+      <h2 class="title">
+        <span class="mask-line" data-a><span>Their office,</span></span>
+        <span class="mask-line" data-a><span class="serif">live</span></span>
+      </h2>
+      <p class="body" data-a>A live dashboard built by my engineer agent. Every agent has a desk, so I can see at a glance <strong>who is working</strong> and who is on standby.</p>
+      <div class="legend">
+        <div data-a data-d="300"><span class="dot working"></span>Working</div>
+        <div data-a data-d="300"><span class="dot queued"></span>Queued</div>
+        <div data-a data-d="300"><span class="dot standby"></span>Standby</div>
+      </div>
+    </div>
+    <img class="shot" src="assets/img/office.webp" width="1311" height="838" alt="Pixel Agent Monitor: a pixel-art office with eight rooms, one per agent, and a team roster showing each agent's status" data-a="reveal" data-d="200">
+    <aside class="speaker-notes">This is a live office view my engineer agent built for the team. Each character is an agent; when one is working on a task you can see it move to its desk.</aside>
+  </section>
+
+  <!-- 09 · How work flows ================================================ -->
+  <section class="slide s-flow" data-section="How work flows" aria-label="One request, a whole team">
+    <h2 class="title">
+      <span class="mask-line" data-a><span>One request, <span class="serif">a whole team</span></span></span>
+    </h2>
+    <div class="request" data-a="left" data-d="200">
+      <span class="who">ME</span>
+      <span class="msg">“Make a visual and a caption for tomorrow’s post”</span>
+    </div>
+    <div class="flow">
+      <div class="track" aria-hidden="true"><i></i></div>
+      <div class="step icon-draw" data-a data-d="700"><span class="bubble"><i data-icon="compass"></i></span><span class="who">CEO</span><span class="what">Plans and delegates</span></div>
+      <div class="step icon-draw" data-a data-d="1100"><span class="bubble"><i data-icon="pen-tool"></i></span><span class="who">Designer</span><span class="what">Designs the visual</span></div>
+      <div class="step icon-draw" data-a data-d="1500"><span class="bubble"><i data-icon="message-circle"></i></span><span class="who">Marketing</span><span class="what">Writes the caption</span></div>
+      <div class="step icon-draw" data-a data-d="1900"><span class="bubble"><i data-icon="square-check"></i></span><span class="who">CEO</span><span class="what">Checks it all together</span></div>
+      <div class="step icon-draw" data-a data-d="2300"><span class="bubble"><i data-icon="thumbs-up"></i></span><span class="who">Me</span><span class="what">Approves before posting</span></div>
+    </div>
+    <div class="autopilot icon-draw" data-a data-d="2700">
+      <i data-icon="clock"></i>
+      <span><b>On autopilot every day:</b> the researcher scans the news <span class="arrow">→</span> the CEO sends me a daily report. <b>No prompt needed.</b></span>
+    </div>
+    <aside class="speaker-notes">One message from me becomes a small project: the CEO plans it, the designer makes the visual, marketing writes the caption, the CEO checks it, and I approve. Some work also runs on its own every day.</aside>
+  </section>
+
+  <!-- 10 · Real output =================================================== -->
+  <section class="slide s-output" data-section="Agents at work" aria-label="Real output, every morning">
+    <h2 class="title">
+      <span class="mask-line" data-a><span>Real output, <span class="serif">every morning</span></span></span>
+    </h2>
+    <div class="pair">
+      <figure data-a="rise" data-d="200">
+        <figcaption><span class="who">Researcher <span class="serif">· Edward</span></span><span class="label">07:00 news brief</span></figcaption>
+        <div class="frame"><img class="shot" src="assets/img/news-brief.webp" width="1204" height="817" alt="Discord message from Edward, the researcher agent: the 07:00 news brief with AI news, markets, ForexFactory events, USD/IDR and what to watch"></div>
+      </figure>
+      <figure data-a="rise" data-d="400">
+        <figcaption><span class="who">CEO <span class="serif">· Rudi</span></span><span class="label">Daily report on everyone’s work</span></figcaption>
+        <div class="frame"><img class="shot" src="assets/img/daily-report.webp" width="1228" height="858" alt="Discord message from Rudi, the CEO agent: a daily report listing what each agent did"></div>
+      </figure>
+    </div>
+    <aside class="speaker-notes">Left: the researcher posts a news brief at 7 AM with the day's key events. Right: the CEO sends me one daily report summarising what every agent did.</aside>
+  </section>
+
+  <!-- 11 · Notes to journal ============================================== -->
+  <section class="slide s-journal" data-section="Agents at work" aria-label="From my notes to a clean journal">
+    <h2 class="title">
+      <span class="mask-line" data-a><span>From my notes <span class="serif">to a clean journal</span></span></span>
+    </h2>
+    <div class="journal">
+      <figure data-a="left" data-d="200">
+        <span class="label">1 · I send my notes + chart</span>
+        <img class="shot" src="assets/img/trading-notes.webp" width="1227" height="564" alt="A casual Discord message to Kimi describing the day's market read, with a TradingView chart attached">
+      </figure>
+      <div class="arrow-col icon-draw" data-a="fade" data-d="700"><i data-icon="arrow-right"></i></div>
+      <figure data-a="right" data-d="900">
+        <span class="label">2 · The agent reviews and logs it</span>
+        <img class="shot" src="assets/img/trading-journal.webp" width="1789" height="827" alt="Kimi's Journal in Notion: structured entries with asset, date, bias, scenario, execution, reason, result and evaluation">
+      </figure>
+    </div>
+    <p class="note" data-a data-d="1300"><b>Trading analyst:</b> turns a casual chat message into a structured journal entry, with a review of the decision.</p>
+    <aside class="speaker-notes">I just chat with the trading analyst like a person: what I saw and what I did, plus a chart. It turns that into a clean journal entry in Notion, with the plan, the reason, and an honest review of the decision.</aside>
+  </section>
+
+  <!-- 12 · Dojima ======================================================== -->
+  <section class="slide dark s-dojima" data-section="Built with an agent" aria-label="Dojima">
+    <div class="copy">
+      <h2 class="title"><span class="mask-line" data-a><span>Dojima</span></span></h2>
+      <p class="lede" data-a>A trading-practice web app I built with Claude Code, <strong>without writing the code myself.</strong></p>
+      <div class="stack">
+        <div class="layer icon-draw" data-a data-d="700"><i data-icon="monitor"></i><b>Frontend</b><span>What you see: charts, journal, themes</span></div>
+        <div class="layer icon-draw" data-a data-d="820"><i data-icon="server"></i><b>Backend</b><span>The engine: orders, replay, login</span></div>
+        <div class="layer icon-draw" data-a data-d="940"><i data-icon="database"></i><b>Database</b><span>The memory: accounts and trades</span></div>
+      </div>
+    </div>
+    <div class="visual">
+      <img class="shot" src="assets/img/dojima.webp" width="1919" height="906" alt="Dojima trade screen: an MNQ candlestick chart with session shading, a watchlist, an order ticket and a paper account" data-a="wipe-r" data-d="250">
+      <div class="pipeline" data-a data-d="1300">
+        <span>I <b>describe it</b></span><i data-icon="arrow-right" class="sm"></i>
+        <span>Claude Code <b>builds it</b></span><i data-icon="arrow-right" class="sm"></i>
+        <span>it <b>goes live</b></span>
+      </div>
+    </div>
+    <aside class="speaker-notes">Dojima is a full trading-practice app with paper money. I am not a programmer: I describe what I want, Claude Code (an AI agent) writes the code and publishes it. It has a frontend you see, a backend that runs the logic, and a database that stores the data.</aside>
+  </section>
+
+  <!-- 13 · AI agents for HR ============================================== -->
+  <section class="slide s-hr" data-section="AI agents for HR" aria-label="An AI team for HR">
+    <div class="copy">
+      <h2 class="title">
+        <span class="mask-line" data-a><span>An AI team</span></span>
+        <span class="mask-line" data-a><span class="serif">for HR</span></span>
+      </h2>
+      <p class="lede" data-a>One orchestrator that understands HR, with a specialist for each job.</p>
+      <p class="guard" data-a data-d="1600" style="margin-top:auto"><i data-icon="square-check" class="sm"></i>HR still reviews and approves everything.</p>
+    </div>
+    <div class="hr-map" id="hrmap">
+      <svg class="wires" aria-hidden="true"></svg>
+      <div class="hr-left">
+        <div class="pill" data-a="drop" data-d="200" data-wire="hrteam">HR team</div>
+        <div class="hr-head" data-a="scale" data-d="450" data-wire="hrhead">Head of HR<small>agent</small></div>
+      </div>
+      <div class="hr-specs">
+        <div class="spec icon-draw" data-a data-d="900" data-wire="spec"><span class="icon-wrap"><i data-icon="file-text" class="sm"></i></span><b>Job descriptions</b><span>Drafts JDs from a short brief</span></div>
+        <div class="spec icon-draw" data-a data-d="980" data-wire="spec"><span class="icon-wrap"><i data-icon="user-check" class="sm"></i></span><b>Recruitment</b><span>Screening notes and interview kits</span></div>
+        <div class="spec icon-draw" data-a data-d="1060" data-wire="spec"><span class="icon-wrap"><i data-icon="user-plus" class="sm"></i></span><b>Onboarding</b><span>Checklists and first-week plans</span></div>
+        <div class="spec icon-draw" data-a data-d="1140" data-wire="spec"><span class="icon-wrap"><i data-icon="chart-no-axes-column" class="sm"></i></span><b>HR reports</b><span>Weekly and monthly summaries</span></div>
+        <div class="spec icon-draw" data-a data-d="1220" data-wire="spec"><span class="icon-wrap"><i data-icon="book-open" class="sm"></i></span><b>Policy Q&amp;A</b><span>Answers staff questions from the handbook</span></div>
+        <div class="spec icon-draw" data-a data-d="1300" data-wire="spec"><span class="icon-wrap"><i data-icon="award" class="sm"></i></span><b>Training</b><span>Learning plans and materials</span></div>
+      </div>
+    </div>
+    <aside class="speaker-notes">Same idea as my team, applied to HR. One Head of HR agent receives requests from the HR team and delegates to specialists: job descriptions, recruitment, onboarding, reports, policy questions and training. HR still reviews and approves everything.</aside>
+  </section>
+
+  <!-- 14 · Close ========================================================= -->
+  <section class="slide dark s-close" data-section="Thank you" aria-label="Thank you. Start small.">
+    <div class="top" style="display:flex;justify-content:space-between">
+      <span class="label" data-a="fade">Thank you</span>
+      <span class="label" data-a="fade">AI Agents · A simple guide</span>
+    </div>
+    <h2 class="title xl">
+      <span class="mask-line" data-a><span>Start</span></span>
+      <span class="mask-line" data-a><span class="serif">small.</span></span>
+    </h2>
+    <div class="bottom">
+      <div class="ones">
+        <div class="one" data-a data-d="700"><span class="serif">One agent.</span></div>
+        <div class="one" data-a data-d="1000"><span class="serif">One task.</span></div>
+        <div class="one" data-a data-d="1300"><span class="serif">One week.</span></div>
+      </div>
+      <span class="q" data-a="fade" data-d="1900">Questions?</span>
+    </div>
+    <aside class="speaker-notes">My suggestion: start small with one agent and one task, see it working within a week, then grow from there.</aside>
+  </section>
+
+  <footer class="chrome" aria-hidden="true">
+    <span class="section-name"></span>
+    <span class="count"><b class="cur">01</b> / <span class="tot">14</span></span>
+  </footer>
+  <div class="progress" aria-hidden="true"></div>
+</div>
+</main>
+
+<div class="lightbox" id="lightbox" aria-hidden="true"></div>
+<div class="notes" id="notes" role="region" aria-label="Speaker notes" aria-live="polite"><div class="meta"></div><div class="text"></div></div>
+<div class="help" id="help" role="dialog" aria-label="Keyboard shortcuts">
+  <div><kbd>→</kbd>Next · <kbd>←</kbd>Back</div>
+  <div><kbd>F</kbd>Full screen</div>
+  <div><kbd>N</kbd>Speaker notes</div>
+  <div><kbd>P</kbd>Presenter window</div>
+  <div><kbd>Esc</kbd>Close</div>
+  <div><kbd>?</kbd>This help</div>
+</div>
+
+<script src="assets/icons.js"></script>
+<script src="assets/deck.js"></script>
+</body>
+</html>
