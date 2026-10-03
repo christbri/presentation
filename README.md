@@ -2,41 +2,40 @@
 
 A talk for the HR team: what an AI agent is, a real eight-agent team running every day, an app built with an agent, and a proposal for an AI team for HR.
 
-It comes in two versions with the same content: the web deck is the main one, and the PowerPoint is its twin.
+**The deck: [`pptx/AI-Agents.pptx`](pptx/AI-Agents.pptx)**: 14 slides, black, white and gray, with speaker notes on every slide.
 
-| | File | Motion |
-|---|---|---|
-| **Web deck** | `index.html` | Every slide has its own entrance: headlines rise from behind a mask, the agent loop draws itself, the 8 rolls up like an odometer, and connector lines trace from CEO to the team and from Head of HR to the specialists |
-| **PowerPoint** | `pptx/AI-Agents.pptx` | A fade transition on every slide, then each element fades in on its own timing, with no clicks needed |
+## The motion: Morph, end to end
 
-## Presenting the web deck
+Every slide uses PowerPoint's **Morph** transition, so each slide grows out of the one before it.
 
-Open `index.html` in Chrome, Edge, Safari or Firefox. It runs offline from the folder, with no server and no internet.
+One black shape travels through the whole deck and turns into something new on every slide:
 
-| Key | Action |
+| Slide | The black shape becomes |
 |---|---|
-| `→` `Space` `Enter` | Next slide |
-| `←` `Backspace` | Previous slide |
-| `F` | Full screen |
-| `N` | Speaker notes overlay |
-| `P` | Presenter window (notes, timer, next slide), synced with the main window |
-| `1`–`9` `Home` `End` | Jump |
-| `?` | Shortcut help |
+| 1 · AI Agents | the whole dark cover |
+| 2 · An AI that gets things done | the **Your goal** circle at the centre of the loop |
+| 3 · Chat AI vs AI Agent | the **AI Agent** panel |
+| 4 · What an agent can do | the rule above the six capabilities |
+| 5 · What every agent is made of | the **Model** bar under Soul, Skills and Memory |
+| 6 · My own AI team | the whole dark slide behind the 8 |
+| 7 · How my team is structured | the **CEO** box |
+| 8 · Their office, live | the frame around the office screenshot |
+| 9 · One request, a whole team | the request speech bubble |
+| 10 · Real output, every morning | the panel holding both Discord screenshots |
+| 11 · From my notes to a clean journal | the arrow between notes and journal |
+| 12 · Dojima | the whole dark slide |
+| 13 · An AI team for HR | the **Head of HR** box |
+| 14 · Start small | the whole dark closing slide |
 
-You can also click the right side of the slide to go forward and the left side to go back, or swipe on a phone or tablet. Click any screenshot to zoom it full screen.
+The titles, the slide counter and the progress line along the bottom morph between slides as well.
 
-**Save as PDF:** press Ctrl/Cmd + P and choose *Save as PDF*. You get one page per slide, with every animation in its final state.
+Morph needs PowerPoint 2019, PowerPoint for Microsoft 365, or PowerPoint for the web or mobile. Older versions fall back to a fade. Keynote and Google Slides don't play Morph.
 
-## The design
+## Editing
 
-- **Black, white and gray only.** The screenshots keep their real colors because they're evidence.
-- **Type:** Schibsted Grotesk for the voice, with one EB Garamond italic phrase per headline as the accent. The PowerPoint uses Arial and Georgia so it looks the same on any computer.
-- The light content slides are bookended by dark slides: the cover, the "8 agents" moment, Dojima and the close.
-- Motion uses exponential ease-out, and nothing moves just to move. If the viewer's system asks for reduced motion, the deck switches to simple fades.
+You can edit text directly in PowerPoint. If you add your own shapes and want them to morph too, give them the same name on both slides, starting with `!!` (Home → Arrange → Selection Pane). The travelling black shape is called `!!ink`.
 
-## Rebuilding the PowerPoint
-
-The PowerPoint is generated from `pptx/build.cjs`. After you edit copy there:
+To regenerate the file from code:
 
 ```bash
 npm install
@@ -46,12 +45,9 @@ npm run pptx
 ## Files
 
 ```
-index.html            the web deck: all 14 slides and their speaker notes
-assets/deck.css       design system, layouts and the entrance choreography
-assets/deck.js        navigation, presenter sync, lightbox, drawn connectors
-assets/icons.js       Lucide icons (ISC licence)
-assets/fonts/         self-hosted Schibsted Grotesk + EB Garamond (OFL)
+pptx/AI-Agents.pptx   the deck
+pptx/build.cjs        builds the deck (layout, copy, notes, Morph)
 assets/img/           the screenshots
-pptx/                 PowerPoint build script and output
+assets/icons.js       Lucide icons (ISC licence)
 .claude/              design skills and agents for Claude Code
 ```

@@ -1,10 +1,14 @@
-/* Builds pptx/AI-Agents.pptx: the PowerPoint twin of index.html.
-   Same content, same black/white/gray system, native PowerPoint motion:
-   a fade transition on every slide, then each element fades in on its own
-   timing (no clicks needed).
+/* Builds pptx/AI-Agents.pptx.
+
+   Motion is PowerPoint Morph, end to end. One black shape, "!!ink", lives on
+   every slide and turns into something new each time: the full-bleed dark
+   cover, the "Your goal" circle, the AI Agent panel, the rule above the six
+   capabilities, the Model bar, the dark "8" slide, the CEO box, the mat under
+   the office, the request bubble... Titles ("!!title"), the slide counter and
+   the progress bar morph too, so every slide flows out of the one before.
 
    Run:  npm install && npm run pptx
-   Layout is authored on the web deck's 1920×1080 grid: 144 px = 1 inch, 2 px = 1 pt. */
+   Layout is authored on a 1920×1080 grid: 144 px = 1 inch, 2 px = 1 pt. */
 
 const path = require("path");
 const fs = require("fs");
@@ -31,8 +35,8 @@ const px = (v) => v / 144;           // px on the 1920 grid → inches
 const pt = (v) => v / 2;             // px font size → points
 
 // --------------------------------------------------------------------------- helpers
-let animSeq = 0;
-const nameFor = (delay, label) => (delay == null ? label || undefined : `a${delay}_${++animSeq}`);
+// Objects named "!!something" are matched by Morph across consecutive slides.
+const nameFor = (_delay, label) => label || undefined;
 
 function text(slide, runs, o) {
   const opts = {
@@ -97,17 +101,26 @@ async function shot(slide, file, o) {
 const TOTAL = 14;
 function chrome(slide, n, section, dark) {
   if (n !== 1 && n !== TOTAL) {
-    text(slide, section.toUpperCase(), { x: 144, y: 1006, w: 900, h: 28, size: 18, cs: 1.2, color: dark ? C.dim : C.g400, label: "footer-section" });
+    text(slide, section.toUpperCase(), { x: 144, y: 1006, w: 900, h: 28, size: 18, cs: 1.2, color: dark ? C.dim : C.g400, label: "!!section" });
     text(slide, [
       { text: String(n).padStart(2, "0"), options: { color: dark ? C.white : C.black } },
       { text: " / " + TOTAL, options: { color: dark ? C.dim : C.g400 } },
-    ], { x: 1476, y: 1006, w: 300, h: 28, size: 18, cs: 1.2, align: "right", label: "footer-count" });
+    ], { x: 1476, y: 1006, w: 300, h: 28, size: 18, cs: 1.2, align: "right", label: "!!count" });
   }
-  rect(slide, { x: 0, y: 1076, w: 1920 * (n / TOTAL), h: 4, fill: dark ? C.white : C.black, label: "progress" });
+  rect(slide, { x: 0, y: 1076, w: 1920 * (n / TOTAL), h: 4, fill: dark ? C.white : C.black, label: "!!progress" });
 }
-function base(pres, dark) {
+// Every slide starts with the ink shape. Full-bleed ink is what makes a slide dark.
+const FULL = { x: -12, y: -12, w: 1944, h: 1104, r: 1 };
+function base(pres, ink) {
   const s = pres.addSlide();
-  s.background = { color: dark ? C.black : C.paper };
+  s.background = { color: C.paper };
+  const g = ink === true ? FULL : ink;
+  s.addShape("roundRect", {
+    x: px(g.x), y: px(g.y), w: px(g.w), h: px(g.h),
+    fill: { color: C.black }, line: { type: "none" },
+    rectRadius: px(Math.max(g.r ?? 1, 1)),
+    objectName: "!!ink",
+  });
   return s;
 }
 // Two-part headline: sans line(s) + Georgia italic accent
@@ -117,11 +130,11 @@ function headline(slide, a, b, o = {}) {
     text(slide, [
       { text: a + " ", options: { fontFace: SANS } },
       { text: b, options: { fontFace: SERIF, italic: true, color: o.accentColor } },
-    ], { x, y, w, h: size * 1.25, size, color: o.color, delay: 0, cs: -2 });
+    ], { x, y, w, h: size * 1.25, size, color: o.color, cs: -2, label: "!!title" });
     return;
   }
-  text(slide, a, { x, y, w, h: size * 1.15, size, color: o.color, delay: 0, cs: -2 });
-  text(slide, b, { x, y: y + size * 1.02, w, h: size * 1.25, size: size * 1.04, font: SERIF, italic: true, color: o.color, delay: 120 });
+  text(slide, a, { x, y, w, h: size * 1.15, size, color: o.color, cs: -2, label: "!!title" });
+  text(slide, b, { x, y: y + size * 1.02, w, h: size * 1.25, size: size * 1.04, font: SERIF, italic: true, color: o.color, label: "!!title2" });
 }
 
 // --------------------------------------------------------------------------- deck
@@ -137,22 +150,21 @@ async function build() {
     const s = base(pres, true);
     label(s, "A simple guide", { x: 144, y: 112, w: 600, color: C.g500, delay: 0 });
     label(s, "For the HR team", { x: 1176, y: 112, w: 600, color: C.g500, align: "right", delay: 0 });
-    text(s, "AI", { x: 136, y: 200, w: 1200, h: 320, size: 300, color: C.white, cs: -6, lh: 0.9, delay: 150 });
-    text(s, "Agents", { x: 136, y: 470, w: 1300, h: 360, size: 316, font: SERIF, italic: true, color: C.white, lh: 0.9, delay: 350 });
+    text(s, "AI", { x: 136, y: 200, w: 1200, h: 320, size: 300, color: C.white, cs: -6, lh: 0.9, label: "!!title" });
+    text(s, "Agents", { x: 136, y: 470, w: 1300, h: 360, size: 316, font: SERIF, italic: true, color: C.white, lh: 0.9, label: "!!title2" });
     text(s, [
       { text: "From chatting with AI", options: { breakLine: true } },
       { text: "to " },
       { text: "working", options: { fontFace: SERIF, italic: true, color: C.white } },
       { text: " with AI." },
     ], { x: 144, y: 832, w: 900, h: 140, size: 48, color: C.g500, lh: 1.25, delay: 700 });
-    text(s, "Press → to begin".toUpperCase(), { x: 1376, y: 930, w: 400, h: 30, size: 20, cs: 1.6, color: C.dim, align: "right", delay: 1100 });
     chrome(s, 1, "AI Agents", true);
     s.addNotes("Today I want to explain AI agents in simple terms, show what I have built with them, and suggest how we could use them in HR.");
   }
 
   // 02 · What is an AI agent ------------------------------------------------
   {
-    const s = base(pres, false);
+    const s = base(pres, { x: 1430 - 105, y: 560 - 105, w: 210, h: 210, r: 105 });
     headline(s, "An AI that", "gets things done", { y: 110 });
     text(s, [
       { text: "Normal AI " , options: { color: C.g600 } },
@@ -173,7 +185,6 @@ async function build() {
       ellipse(s, { x: x - 72, y: y - 72, w: 144, h: 144, fill: C.paper, line: C.black, lw: 1.5, delay: 600 + k * 200 });
       text(s, t, { x: x - 72, y: y - 72, w: 144, h: 144, size: 30, bold: true, align: "center", valign: "middle", delay: 600 + k * 200 });
     });
-    ellipse(s, { x: cx - 105, y: cy - 105, w: 210, h: 210, fill: C.black, delay: 1500 });
     text(s, "Your goal", { x: cx - 105, y: cy - 105, w: 210, h: 210, size: 46, font: SERIF, italic: true, color: C.white, align: "center", valign: "middle", lh: 0.95, delay: 1500 });
     chrome(s, 2, "What is an AI agent", false);
     s.addNotes("A chatbot answers and stops. An agent gets a goal and loops: plan, act with tools, check the result, improve, until the job is done.");
@@ -181,13 +192,12 @@ async function build() {
 
   // 03 · Chat AI vs AI agent ----------------------------------------------
   {
-    const s = base(pres, false);
+    const s = base(pres, { x: 944, y: 290, w: 832, h: 556, r: 24 });
     text(s, [
       { text: "Chat AI " }, { text: "vs", options: { fontFace: SERIF, italic: true, color: C.g400 } }, { text: " AI Agent" },
-    ], { x: 144, y: 120, w: 1632, h: 120, size: 96, cs: -2, delay: 0 });
+    ], { x: 144, y: 120, w: 1632, h: 120, size: 96, cs: -2, label: "!!title" });
     const top = 290, h = 556;
-    rect(s, { x: 144, y: top, w: 832, h, fill: C.white, line: C.g200, radius: 24, delay: 200 });
-    rect(s, { x: 944, y: top, w: 832, h, fill: C.black, radius: 24, delay: 350 });
+    rect(s, { x: 144, y: top, w: 784, h, fill: C.white, line: C.g200, radius: 24, delay: 200 });
     const col = (x, dark, kicker, head, sub, steps, d0) => {
       label(s, kicker, { x: x + 64, y: top + 60, w: 700, color: dark ? C.g500 : C.g600, delay: d0 });
       text(s, head, { x: x + 64, y: top + 96, w: 720, h: 70, size: 52, bold: true, color: dark ? C.white : C.black, delay: d0 });
@@ -213,9 +223,8 @@ async function build() {
 
   // 04 · What agents can do -------------------------------------------------
   {
-    const s = base(pres, false);
+    const s = base(pres, { x: 144, y: 398, w: 1632, h: 4, r: 1 });
     headline(s, "What an agent can do", "that chat can’t", { y: 110 });
-    line(s, 144, 400, 1776, 400, { color: C.black, delay: 200 });
     const caps = [
       ["clock", "Works on a schedule", "Runs tasks at set times, without being asked"],
       ["wrench", "Uses tools", "Browses the web, edits files, runs apps"],
@@ -240,9 +249,8 @@ async function build() {
 
   // 05 · Building blocks ------------------------------------------------------
   {
-    const s = base(pres, false);
+    const s = base(pres, { x: 144, y: 812, w: 1632, h: 158, r: 24 });
     headline(s, "What every agent", "is made of", { y: 110 });
-    rect(s, { x: 144, y: 812, w: 1632, h: 158, fill: C.black, radius: 24, delay: 200 });
     await icon(s, "cpu", { x: 196, y: 863, s: 56, color: C.white, delay: 300 });
     text(s, "Model", { x: 276, y: 858, w: 240, h: 70, size: 56, bold: true, color: C.white, delay: 300 });
     text(s, "THE BRAIN UNDERNEATH", { x: 476, y: 882, w: 300, h: 30, size: 19, cs: 1.6, color: C.g500, delay: 300 });
@@ -272,8 +280,8 @@ async function build() {
   // 06 · What I am building -------------------------------------------------
   {
     const s = base(pres, true);
-    text(s, "My own", { x: 144, y: 300, w: 900, h: 140, size: 128, color: C.white, cs: -3, delay: 0 });
-    text(s, "AI team", { x: 144, y: 430, w: 900, h: 160, size: 136, font: SERIF, italic: true, color: C.white, delay: 150 });
+    text(s, "My own", { x: 144, y: 300, w: 900, h: 140, size: 128, color: C.white, cs: -3, label: "!!title" });
+    text(s, "AI team", { x: 144, y: 430, w: 900, h: 160, size: 136, font: SERIF, italic: true, color: C.white, label: "!!title2" });
     text(s, [
       { text: "8 agents", options: { color: C.white, bold: true } },
       { text: ", running 24/7 on one small server. I manage them from Discord.", options: { color: C.g500 } },
@@ -285,32 +293,29 @@ async function build() {
 
   // 07 · Team structure ------------------------------------------------------
   {
-    const s = base(pres, false);
+    const s = base(pres, { x: 844, y: 384, w: 232, h: 96, r: 20 });
     headline(s, "How my team", "is structured", { inline: true, y: 120 });
     rect(s, { x: 905, y: 268, w: 110, h: 62, fill: C.paper, line: C.black, lw: 1.5, radius: 31, delay: 100 });
     text(s, "Me", { x: 905, y: 268, w: 110, h: 62, size: 28, bold: true, align: "center", valign: "middle", delay: 100 });
     line(s, 960, 330, 960, 384, { delay: 300 });
-    rect(s, { x: 844, y: 384, w: 232, h: 96, fill: C.black, radius: 20, delay: 300 });
-    text(s, [{ text: "CEO", options: { breakLine: true } }, { text: "RUDI", options: { fontSize: 9, color: C.g500, charSpacing: 1 } }],
-      { x: 844, y: 384, w: 232, h: 96, size: 40, bold: true, color: C.white, align: "center", valign: "middle", lh: 0.95, delay: 300 });
+    text(s, "CEO", { x: 844, y: 384, w: 232, h: 96, size: 40, bold: true, color: C.white, align: "center", valign: "middle", delay: 300 });
     text(s, "Receives my tasks,", { x: 470, y: 418, w: 350, h: 32, size: 22, color: C.g600, align: "right", delay: 600 });
     text(s, "delegates, reports back", { x: 1100, y: 418, w: 350, h: 32, size: 22, color: C.g600, delay: 600 });
-    const crew = [["search", "Researcher", "Edward", "Daily news and markets"], ["pen-tool", "Designer", "Leonardo", "Visuals and UI/UX"],
-      ["code", "Engineer", "Astra", "Builds and fixes the system"], ["trending-up", "Trading analyst", "Kimi", "Reviews my trading journal"],
-      ["activity", "Health coach", "Alexa", "Routine and nutrition check-ins"], ["message-circle", "Marketing", "Biti", "Content and captions"],
-      ["map", "Travel planner", "Qunce", "Trips and itineraries"]];
+    const crew = [["search", "Researcher", "Daily news and markets"], ["pen-tool", "Designer", "Visuals and UI/UX"],
+      ["code", "Engineer", "Builds and fixes the system"], ["trending-up", "Trading analyst", "Reviews my trading journal"],
+      ["activity", "Health coach", "Routine and nutrition check-ins"], ["message-circle", "Marketing", "Content and captions"],
+      ["map", "Travel planner", "Trips and itineraries"]];
     const step = (1632 + 16) / 7, busY = 600;
     line(s, 960, 480, 960, busY, { delay: 650 });
     line(s, 144 + 36, busY, 144 + 6 * step + 36, busY, { delay: 750 });
     for (let k = 0; k < 7; k++) {
-      const [ic, role, who, what] = crew[k];
+      const [ic, role, what] = crew[k];
       const x = 144 + k * step, d = 1000 + Math.abs(k - 3) * 90;
       line(s, x + 36, busY, x + 36, 704, { delay: 850 });
       ellipse(s, { x, y: 704, w: 72, h: 72, fill: C.paper, line: C.black, lw: 1.5, delay: d });
       await icon(s, ic, { x: x + 20, y: 724, s: 32, delay: d });
       text(s, role, { x, y: 800, w: step - 16, h: 40, size: 28, bold: true, delay: d });
-      text(s, who, { x, y: 838, w: step - 16, h: 36, size: 26, font: SERIF, italic: true, color: C.g600, delay: d });
-      text(s, what, { x, y: 880, w: step - 24, h: 70, size: 21, color: C.g600, lh: 1.3, delay: d });
+      text(s, what, { x, y: 846, w: step - 24, h: 70, size: 22, color: C.g600, lh: 1.3, delay: d });
     }
     chrome(s, 7, "My AI team", false);
     s.addNotes("I give tasks to my CEO agent. It breaks them down, hands them to the right specialist, then reports back to me. Each specialist has its own role and personality.");
@@ -318,7 +323,7 @@ async function build() {
 
   // 08 · The office ------------------------------------------------------------
   {
-    const s = base(pres, false);
+    const s = base(pres, { x: 780, y: 206, w: 1020, h: 972 * 838 / 1311 + 48, r: 28 });
     headline(s, "Their office,", "live", { y: 220, size: 100, w: 580 });
     text(s, [
       { text: "A live dashboard built by my engineer agent. Every agent has a desk, so I can see at a glance ", options: { color: C.g600 } },
@@ -337,10 +342,9 @@ async function build() {
 
   // 09 · How work flows ----------------------------------------------------------
   {
-    const s = base(pres, false);
+    const s = base(pres, { x: 210, y: 300, w: 1300, h: 116, r: 40 });
     headline(s, "One request,", "a whole team", { inline: true, y: 120 });
     label(s, "Me", { x: 144, y: 345, w: 80, delay: 200 });
-    rect(s, { x: 210, y: 300, w: 1300, h: 116, fill: C.black, radius: 40, delay: 200 });
     text(s, "“Make a visual and a caption for tomorrow’s post”", { x: 250, y: 300, w: 1240, h: 116, size: 44, font: SERIF, italic: true, color: C.white, valign: "middle", delay: 200 });
     const steps = [["compass", "CEO", "Plans and delegates"], ["pen-tool", "Designer", "Designs the visual"], ["message-circle", "Marketing", "Writes the caption"],
       ["square-check", "CEO", "Checks it all together"], ["thumbs-up", "Me", "Approves before posting"]];
@@ -367,16 +371,16 @@ async function build() {
 
   // 10 · Real output -------------------------------------------------------------
   {
-    const s = base(pres, false);
+    const s = base(pres, { x: 144, y: 276, w: 1632, h: 672, r: 28 });
     headline(s, "Real output,", "every morning", { inline: true, y: 120 });
-    const w = 792;
-    const figs = [["Researcher", "Edward", "07:00 news brief", "news-brief.webp", 817 / 1204], ["CEO", "Rudi", "Daily report on everyone’s work", "daily-report.webp", 858 / 1228]];
+    const w = 768;
+    const figs = [["Researcher", "07:00 news brief", "news-brief.webp", 817 / 1204], ["CEO", "Daily report on everyone’s work", "daily-report.webp", 858 / 1228]];
     for (let k = 0; k < 2; k++) {
-      const [role, who, kick, file, ar] = figs[k];
-      const x = 144 + k * (w + 48), d = 200 + k * 200;
-      text(s, [{ text: role + " · ", options: {} }, { text: who, options: { fontFace: SERIF, italic: true, color: C.g600 } }], { x, y: 300, w: 420, h: 44, size: 30, bold: false, delay: d });
-      label(s, kick, { x: x + 300, y: 308, w: w - 300, align: "right", delay: d });
-      await shot(s, file, { x, y: 362, w, h: w * ar, delay: d });
+      const [role, kick, file, ar] = figs[k];
+      const x = 176 + k * (w + 32), d = 200 + k * 200;
+      text(s, role, { x, y: 308, w: 300, h: 44, size: 30, bold: true, color: C.white, delay: d });
+      label(s, kick, { x: x + 260, y: 316, w: w - 260, align: "right", color: C.g500, delay: d });
+      await shot(s, file, { x, y: 376, w, h: w * ar, delay: d });
     }
     chrome(s, 10, "Agents at work", false);
     s.addNotes("Left: the researcher posts a news brief at 7 AM with the day's key events. Right: the CEO sends me one daily report summarising what every agent did.");
@@ -384,11 +388,11 @@ async function build() {
 
   // 11 · Notes to journal ----------------------------------------------------------
   {
-    const s = base(pres, false);
+    const s = base(pres, { x: 788, y: 500, w: 80, h: 80, r: 40 });
     headline(s, "From my notes", "to a clean journal", { inline: true, y: 120 });
     label(s, "1 · I send my notes + chart", { x: 144, y: 340, w: 640, delay: 200 });
     await shot(s, "trading-notes.webp", { x: 144, y: 384, w: 640, h: 640 * 564 / 1227, delay: 200 });
-    await icon(s, "arrow-right", { x: 806, y: 520, s: 56, delay: 700 });
+    await icon(s, "arrow-right", { x: 806, y: 518, s: 44, color: C.white, delay: 700 });
     label(s, "2 · The agent reviews and logs it", { x: 884, y: 340, w: 892, delay: 900 });
     await shot(s, "trading-journal.webp", { x: 884, y: 384, w: 892, h: 892 * 827 / 1789, delay: 900 });
     text(s, [{ text: "Trading analyst:  ", options: { bold: true, color: C.black } }, { text: "turns a casual chat message into a structured journal entry, with a review of the decision.", options: { color: C.g600 } }],
@@ -400,7 +404,7 @@ async function build() {
   // 12 · Dojima ---------------------------------------------------------------------
   {
     const s = base(pres, true);
-    text(s, "Dojima", { x: 140, y: 100, w: 600, h: 190, size: 160, color: C.white, cs: -6, delay: 0 });
+    text(s, "Dojima", { x: 140, y: 100, w: 600, h: 190, size: 160, color: C.white, cs: -6, label: "!!title" });
     text(s, [
       { text: "A trading-practice web app I built with Claude Code, ", options: { color: C.g500 } },
       { text: "without writing the code myself.", options: { color: C.white, bold: true } },
@@ -427,7 +431,7 @@ async function build() {
 
   // 13 · AI agents for HR -----------------------------------------------------------------
   {
-    const s = base(pres, false);
+    const s = base(pres, { x: 760, y: 560 - 64, w: 220, h: 128, r: 20 });
     headline(s, "An AI team", "for HR", { y: 110, size: 104, w: 560 });
     text(s, "One orchestrator that understands HR, with a specialist for each job.", { x: 144, y: 380, w: 500, h: 170, size: 34, color: C.g600, lh: 1.3, delay: 300 });
     await icon(s, "square-check", { x: 144, y: 934, s: 28, color: C.g600, delay: 1600 });
@@ -437,7 +441,6 @@ async function build() {
     rect(s, { x: hx, y: 300, w: 170, h: 64, fill: C.paper, line: C.black, lw: 1.5, radius: 32, delay: 200 });
     text(s, "HR team", { x: hx, y: 300, w: 170, h: 64, size: 28, bold: true, align: "center", valign: "middle", delay: 200 });
     line(s, hx + 40, 364, hx + 40, headY - 64, { delay: 350 });
-    rect(s, { x: hx, y: headY - 64, w: 220, h: 128, fill: C.black, radius: 20, delay: 450 });
     text(s, [{ text: "Head of HR", options: { breakLine: true } }, { text: "agent", options: { fontFace: SERIF, italic: true, bold: false, color: C.g500 } }],
       { x: hx + 26, y: headY - 64, w: 190, h: 128, size: 32, bold: true, color: C.white, valign: "middle", lh: 1.1, delay: 450 });
     const specs = [["file-text", "Job descriptions", "Drafts JDs from a short brief"], ["user-check", "Recruitment", "Screening notes and interview kits"],
@@ -464,8 +467,8 @@ async function build() {
     const s = base(pres, true);
     label(s, "Thank you", { x: 144, y: 112, w: 600, color: C.g500, delay: 0 });
     label(s, "AI Agents · A simple guide", { x: 1176, y: 112, w: 600, color: C.g500, align: "right", delay: 0 });
-    text(s, "Start", { x: 136, y: 250, w: 1200, h: 260, size: 240, color: C.white, cs: -5, lh: 0.9, delay: 150 });
-    text(s, "small.", { x: 136, y: 470, w: 1200, h: 290, size: 252, font: SERIF, italic: true, color: C.white, lh: 0.9, delay: 350 });
+    text(s, "Start", { x: 136, y: 250, w: 1200, h: 260, size: 240, color: C.white, cs: -5, lh: 0.9, label: "!!title" });
+    text(s, "small.", { x: 136, y: 470, w: 1200, h: 290, size: 252, font: SERIF, italic: true, color: C.white, lh: 0.9, label: "!!title2" });
     ["One agent.", "One task.", "One week."].forEach((t, k) =>
       text(s, t, { x: 144 + k * 420, y: 876, w: 440, h: 100, size: 64, font: SERIF, italic: true, color: C.white, delay: 700 + k * 300 }));
     text(s, "Questions?", { x: 1426, y: 885, w: 350, h: 70, size: 56, bold: true, color: C.white, align: "right", delay: 1900 });
@@ -474,43 +477,30 @@ async function build() {
   }
 
   // ------------------------------------------------------------- motion pass
+  // pptxgenjs can't write transitions, so add Morph to every slide's XML.
   const buf = await pres.write({ outputType: "nodebuffer" });
   const zip = await JSZip.loadAsync(buf);
   const slideFiles = Object.keys(zip.files).filter((f) => /^ppt\/slides\/slide\d+\.xml$/.test(f));
   for (const f of slideFiles) {
+    const n = +f.match(/slide(\d+)\.xml$/)[1];
     let xml = await zip.file(f).async("string");
-    const targets = [...xml.matchAll(/<p:nv(Sp|Pic)Pr>\s*<p:cNvPr id="(\d+)" name="a(\d+)_\d+"/g)]
-      .map((m) => ({ id: m[2], delay: +m[3], sp: m[1] === "Sp" }));
-    xml = xml.replace("</p:sld>", transitionXml() + timingXml(targets) + "</p:sld>");
+    xml = xml.replace("</p:sld>", (n === 1 ? fadeXml() : morphXml()) + "</p:sld>");
     zip.file(f, xml);
   }
   fs.writeFileSync(OUT, await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
   console.log("Wrote", path.relative(ROOT, OUT));
 }
 
-function transitionXml() {
+function fadeXml() {
   return '<p:transition spd="slow"><p:fade/></p:transition>';
 }
 
-// Every tagged element fades in automatically after the transition, at its own delay.
-function timingXml(targets) {
-  if (!targets.length) return "";
-  let id = 4;
-  const effects = targets.map(({ id: spid, delay }) => {
-    const a = ++id, b = ++id, c = ++id;
-    return `<p:par><p:cTn id="${a}" presetID="10" presetClass="entr" presetSubtype="0" fill="hold" nodeType="withEffect"><p:stCondLst><p:cond delay="${delay}"/></p:stCondLst><p:childTnLst>` +
-      `<p:set><p:cBhvr><p:cTn id="${b}" dur="1" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst></p:cTn><p:tgtEl><p:spTgt spid="${spid}"/></p:tgtEl><p:attrNameLst><p:attrName>style.visibility</p:attrName></p:attrNameLst></p:cBhvr><p:to><p:strVal val="visible"/></p:to></p:set>` +
-      `<p:animEffect transition="in" filter="fade"><p:cBhvr><p:cTn id="${c}" dur="700"/><p:tgtEl><p:spTgt spid="${spid}"/></p:tgtEl></p:cBhvr></p:animEffect>` +
-      `</p:childTnLst></p:cTn></p:par>`;
-  }).join("");
-  const bld = targets.filter((t) => t.sp).map(({ id: spid }) => `<p:bldP spid="${spid}" grpId="0" animBg="1"/>`).join("");
-  return `<p:timing><p:tnLst><p:par><p:cTn id="1" dur="indefinite" restart="never" nodeType="tmRoot"><p:childTnLst>` +
-    `<p:seq concurrent="1" nextAc="seek"><p:cTn id="2" dur="indefinite" nodeType="mainSeq"><p:childTnLst>` +
-    `<p:par><p:cTn id="3" fill="hold"><p:stCondLst><p:cond delay="indefinite"/><p:cond evt="onBegin" delay="0"><p:tn val="2"/></p:cond></p:stCondLst><p:childTnLst>` +
-    `<p:par><p:cTn id="4" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst><p:childTnLst>${effects}</p:childTnLst></p:cTn></p:par>` +
-    `</p:childTnLst></p:cTn></p:par>` +
-    `</p:childTnLst></p:cTn><p:prevCondLst><p:cond evt="onPrev" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:prevCondLst><p:nextCondLst><p:cond evt="onNext" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:nextCondLst></p:seq>` +
-    `</p:childTnLst></p:cTn></p:par></p:tnLst><p:bldLst>${bld}</p:bldLst></p:timing>`;
+// Morph (PowerPoint 2019 / Microsoft 365). Older versions fall back to a fade.
+function morphXml() {
+  return '<mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">' +
+    '<mc:Choice xmlns:p159="http://schemas.microsoft.com/office/powerpoint/2015/09/main" Requires="p159">' +
+    '<p:transition xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" spd="slow" p14:dur="1400"><p159:morph option="byObject"/></p:transition>' +
+    '</mc:Choice><mc:Fallback><p:transition spd="slow"><p:fade/></p:transition></mc:Fallback></mc:AlternateContent>';
 }
 
 build().catch((e) => { console.error(e); process.exit(1); });
